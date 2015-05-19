@@ -6,24 +6,34 @@
 %line
 %column
 %cup
+%eofval{
+
+return (symbol(sym.EOF));
+
+%eofval}
+
 
 %{
 /*
 	Ten kod zostanie wstawiony do wygenerowanej klasy skanera.
 */
 	/**
-	*	Metoda tworzy nowy Symbol (token) wraz z okreœleniem jego pozycji, bez wartoœci.
+	*	Metoda tworzy nowy Symbol (token) wraz z okreï¿½leniem jego pozycji, bez wartoï¿½ci.
 	**/
 	private Symbol symbol(int type){
 		return new Symbol(type, yyline, yycolumn);
 	}
 
 	/**
-	*	Metoda tworzy nowy Symbol (token) wraz z okreœleniem jego pozycji i wartoœci.
+	*	Metoda tworzy nowy Symbol (token) wraz z okreï¿½leniem jego pozycji i wartoï¿½ci.
 	**/
 	private Symbol symbol(int type, Object value){
+	
 		return new Symbol(type, yyline, yycolumn, value);
 	}
+	
+	
+	
 %}
 
 
@@ -31,10 +41,10 @@
 	REAL = {INTEGER}[.][0-9]+
 	NUMBER = {INTEGER}|{REAL}
 	
-	WHITESPACE = [ \t\f]
-	LINE_SEPARATOR = \r|\n|\n\r|\r\n
+	WHITESPACE = LINE_SEPARATOR |[ \t\f]
+	LINE_SEPARATOR = \r  | \n | \r\n
 	
- 	/* Wyra¿enia wy³apuj¹ce komentarze */
+ 	/* Wyraï¿½enia wyï¿½apujï¿½ce komentarze */
     COMMENT = {BLOCK_COMMENT} | {LINE_COMMENT} | {JAVADOC_COMMENT}
 
     BLOCK_COMMENT   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
@@ -44,7 +54,8 @@
 	
 %%
 	<YYINITIAL>{
-		{NUMBER}			{ return symbol(sym.NUMBER, new Double(yytext())); }
+		{NUMBER}			{ 
+							return symbol(sym.NUMBER, new Double(yytext())); }
 		
 		{LINE_SEPARATOR}	{ return symbol(sym.NEW_LINE); }
 		
@@ -65,7 +76,7 @@
 		
 		
 		{COMMENT}			{ /* Ignorujemy komentarze */ }
-		{WHITESPACE}		{ /* Ignorujemy bia³e znaki */ }
+		{WHITESPACE}		{ System.out.println("kutazz");/* Ignorujemy biaï¿½e znaki */ }
 		
 		[^] { throw new Error("Nieznany symbol: <" + yytext() + "> on " + yyline + ":" + yycolumn); }
 	}

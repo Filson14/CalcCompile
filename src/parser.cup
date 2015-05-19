@@ -1,13 +1,14 @@
 import java_cup.runtime.*;
 
-// Kod ustawiaj¹cy parser i skaner, którego u¿ywa.
+// Kod ustawiajï¿½cy parser i skaner, ktï¿½rego uï¿½ywa.
 parser code {:
 	Scanner scanner;
 	public Parser(Scanner scanner){
+		super(scanner);
 		this.scanner = scanner;
 	}
 	
-	/* TODO: przetestowaæ nadpisane metody wyrzucaj¹ce b³êdy wraz z wskazaniem pozycji wyst¹pienia */
+	/* TODO: przetestowaï¿½ nadpisane metody wyrzucajï¿½ce bï¿½ï¿½dy wraz z wskazaniem pozycji wystï¿½pienia */
 	/*
 	
 	public void report_error(String message, Object info){
@@ -19,6 +20,7 @@ parser code {:
 				if(s.right >= 0) msg.append(", column " + (s.right+1));
 			}
 		}
+
 		m.append(" : " + message);
 		System.err.println(msg);
 	}
@@ -32,8 +34,8 @@ parser code {:
 	
 :}
 
-init with	{: //scanner.init(); :};
-scan with	{: return scanner.next_token(); :};
+init with	{://scanner.init(); :};
+scan with	{:return scanner.next_token(); :};
 
 // Definicja symboli terminalnych
 terminal		NEW_LINE, PLUS, MINUS, TIMES, DIVIDE, POW;
@@ -45,7 +47,7 @@ terminal Double	NUMBER;
 non terminal Double	expr;
 non terminal		line, input;
 
-// Priorytety dzia³añ - od najmniejszego do najwiêkszego
+// Priorytety dziaï¿½aï¿½ - od najmniejszego do najwiï¿½kszego
 precedence left	PLUS, MINUS;
 precedence left	TIMES, DIVIDE;
 precedence left	POW;
@@ -58,20 +60,20 @@ input	::=	input line
 			|line
 			;
 
-line	::=	NEW_LINE
-			| expr NEW_LINE
+line	::=	NEW_LINE {: System.out.println();:}
+			| expr:e NEW_LINE {: System.out.println(e); :}
 			;
 			
-expr	::=	NUMBER
-			| expr PLUS expr
-			| expr MINUS expr
-			| expr TIMES expr
-			| expr DIVIDE expr
-			| expr POW expr
-			| LPARENT expr RPARENT
-			| SIN LPARENT expr RPARENT
-			| COS LPARENT expr RPARENT
-			| TAN LPARENT expr RPARENT
-			| CTG LPARENT expr RPARENT
+expr	::=	NUMBER:n {: RESULT = n; :}
+			| expr PLUS expr {: :}
+			| expr MINUS expr {: :}
+			| expr TIMES expr {: :}
+			| expr DIVIDE expr {: :}
+			| expr POW expr {: :}
+			| LPARENT expr RPARENT {: :}
+			| SIN LPARENT expr RPARENT {: :}
+			| COS LPARENT expr RPARENT {: :}
+			| TAN LPARENT expr RPARENT {: :} 
+			| CTG LPARENT expr RPARENT {: :}
 			;
 			
