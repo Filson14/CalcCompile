@@ -8,20 +8,17 @@ parser code {:
 		this.scanner = scanner;
 	}
 	
-	/* TODO: przetestowaï¿½ nadpisane metody wyrzucajï¿½ce bï¿½ï¿½dy wraz z wskazaniem pozycji wystï¿½pienia */
-	/*
-	
 	public void report_error(String message, Object info){
 		StringBuilder msg = new StringBuilder("Error");
 		if(info instanceof java_cup.runtime.Symbol){
 			Symbol s = (java_cup.runtime.Symbol) info;
 			if(s.left >= 0){
-				msg.append(" in line" + (s.left+1));
+				msg.append(" in line " + (s.left+1));
 				if(s.right >= 0) msg.append(", column " + (s.right+1));
 			}
 		}
 
-		m.append(" : " + message);
+		msg.append(" : " + message);
 		System.err.println(msg);
 	}
 	
@@ -29,9 +26,6 @@ parser code {:
 		report_error(message, info);
 		System.exit(1);
 	}
-	
-	*/
-	
 :}
 
 init with	{://scanner.init(); :};
@@ -63,17 +57,21 @@ input	::=	input line
 line	::=	NEW_LINE {: :}
 			| expr:e NEW_LINE {: System.out.println(e); :}
 			;
+
+// TODO: Obs³uga niepoprawnych wartoœci dla tan i ctg
+// TODO: Manewrowanie precyzj¹ liczby.
+// (double) Math.round(1000 * Math.sin(Math.toRadians(e)))/1000;
 			
-expr	::=	NUMBER:n {: RESULT = n; :}
-			| expr:e1 PLUS expr:e2 {: RESULT = e1+e2 ;:}
-			| expr:e1 MINUS expr:e2 {: RESULT = e1-e2;:}
-			| expr:e1 TIMES expr:e2 {: RESULT=e1*e2;:}
-			| expr:e1 DIVIDE expr:e2 {: RESULT=e1/e2;:}
-			| expr:e1 POW expr:e2 {: RESULT= Math.pow(e1,e2);:}
-			| LPARENT expr RPARENT {: :}
-			| SIN LPARENT expr:e RPARENT {: RESULT = Math.sin(e); :}
-			| COS LPARENT expr:e RPARENT {: RESULT = Math.cos(e);:}
-			| TAN LPARENT expr:e RPARENT {: RESULT = Math.tan(e);:} 
-			| CTG LPARENT expr:e RPARENT {: :}
+expr	::=	NUMBER:n						{: RESULT = n; :}
+			| expr:e1 PLUS expr:e2			{: RESULT = e1+e2; :}
+			| expr:e1 MINUS expr:e2			{: RESULT = e1-e2; :}
+			| expr:e1 TIMES expr:e2			{: RESULT=e1*e2; :}
+			| expr:e1 DIVIDE expr:e2		{: RESULT=e1/e2; :}
+			| expr:e1 POW expr:e2			{: RESULT= Math.pow(e1,e2); :}
+			| LPARENT expr:e RPARENT 		{: RESULT = e; :}
+			| SIN LPARENT expr:e RPARENT	{: RESULT = Math.sin(Math.toRadians(e)); :}
+			| COS LPARENT expr:e RPARENT	{: RESULT = Math.cos(Math.toRadians(e)); :}
+			| TAN LPARENT expr:e RPARENT	{: RESULT = Math.tan(Math.toRadians(e)); :} 
+			| CTG LPARENT expr:e RPARENT	{: RESULT = 1/Math.tan(Math.toRadians(e)); :}
 			;
 			
