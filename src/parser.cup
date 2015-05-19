@@ -1,0 +1,77 @@
+import java_cup.runtime.*;
+
+// Kod ustawiaj¹cy parser i skaner, którego u¿ywa.
+parser code {:
+	Scanner scanner;
+	public Parser(Scanner scanner){
+		this.scanner = scanner;
+	}
+	
+	/* TODO: przetestowaæ nadpisane metody wyrzucaj¹ce b³êdy wraz z wskazaniem pozycji wyst¹pienia */
+	/*
+	
+	public void report_error(String message, Object info){
+		StringBuilder msg = new StringBuilder("Error");
+		if(info instanceof java_cup.runtime.Symbol){
+			Symbol s = (java_cup.runtime.Symbol) info;
+			if(s.left >= 0){
+				msg.append(" in line" + (s.left+1));
+				if(s.right >= 0) msg.append(", column " + (s.right+1));
+			}
+		}
+		m.append(" : " + message);
+		System.err.println(msg);
+	}
+	
+	public void report_fatal_error(String message, Object info){
+		report_error(message, info);
+		System.exit(1);
+	}
+	
+	*/
+	
+:}
+
+init with	{: //scanner.init(); :};
+scan with	{: return scanner.next_token(); :};
+
+// Definicja symboli terminalnych
+terminal		NEW_LINE, PLUS, MINUS, TIMES, DIVIDE, POW;
+terminal		LPARENT, RPARENT;
+terminal		SIN, COS, TAN, CTG;
+terminal Double	NUMBER;
+
+// Definicja symboli terminalnych
+non terminal Double	expr;
+non terminal		line, input;
+
+// Priorytety dzia³añ - od najmniejszego do najwiêkszego
+precedence left	PLUS, MINUS;
+precedence left	TIMES, DIVIDE;
+precedence left	POW;
+precedence left	SIN, COS, TAN, CTG;
+//precedence	LPARENT, RPARENT;
+
+// Gramatyka
+
+input	::=	input line
+			|line
+			;
+
+line	::=	NEW_LINE
+			| expr NEW_LINE
+			;
+			
+expr	::=	NUMBER
+			| expr PLUS expr
+			| expr MINUS expr
+			| expr TIMES expr
+			| expr DIVIDE expr
+			| expr POW expr
+			| LPARENT expr RPARENT
+			| SIN LPARENT expr RPARENT
+			| COS LPARENT expr RPARENT
+			| TAN LPARENT expr RPARENT
+			| CTG LPARENT expr RPARENT
+			;
+			
