@@ -21,6 +21,7 @@ return (symbol(sym.EOF));
 	*	Metoda tworzy nowy Symbol (token) wraz z okre�leniem jego pozycji, bez warto�ci.
 	**/
 	private Symbol symbol(int type){
+		System.out.println("TOKEN: " + type);
 		return new Symbol(type, yyline, yycolumn);
 	}
 
@@ -28,7 +29,7 @@ return (symbol(sym.EOF));
 	*	Metoda tworzy nowy Symbol (token) wraz z okre�leniem jego pozycji i warto�ci.
 	**/
 	private Symbol symbol(int type, Object value){
-	
+		System.out.println("TOKEN: " + type);
 		return new Symbol(type, yyline, yycolumn, value);
 	}
 	
@@ -54,10 +55,9 @@ return (symbol(sym.EOF));
 	
 %%
 	<YYINITIAL>{
-		{NUMBER}			{ 
-							return symbol(sym.NUMBER, new Double(yytext())); }
+		{NUMBER}			{ return symbol(sym.NUMBER, new Double(yytext())); }
 		
-		{LINE_SEPARATOR}	{return symbol(sym.NEW_LINE); }
+		{LINE_SEPARATOR}	{ return symbol(sym.NEW_LINE); }
 		
 		"("					{ return symbol(sym.LPARENT); }
 		")"					{ return symbol(sym.RPARENT); }
