@@ -60,20 +60,20 @@ input	::=	input line
 			|line
 			;
 
-line	::=	NEW_LINE {: System.out.println();:}
+line	::=	NEW_LINE {: :}
 			| expr:e NEW_LINE {: System.out.println(e); :}
 			;
 			
 expr	::=	NUMBER:n {: RESULT = n; :}
-			| expr PLUS expr {: :}
-			| expr MINUS expr {: :}
-			| expr TIMES expr {: :}
-			| expr DIVIDE expr {: :}
-			| expr POW expr {: :}
+			| expr:e1 PLUS expr:e2 {: RESULT = e1+e2 ;:}
+			| expr:e1 MINUS expr:e2 {: RESULT = e1-e2;:}
+			| expr:e1 TIMES expr:e2 {: RESULT=e1*e2;:}
+			| expr:e1 DIVIDE expr:e2 {: RESULT=e1/e2;:}
+			| expr:e1 POW expr:e2 {: RESULT= Math.pow(e1,e2);:}
 			| LPARENT expr RPARENT {: :}
-			| SIN LPARENT expr RPARENT {: :}
-			| COS LPARENT expr RPARENT {: :}
-			| TAN LPARENT expr RPARENT {: :} 
-			| CTG LPARENT expr RPARENT {: :}
+			| SIN LPARENT expr:e RPARENT {: RESULT = Math.sin(e); :}
+			| COS LPARENT expr:e RPARENT {: RESULT = Math.cos(e);:}
+			| TAN LPARENT expr:e RPARENT {: RESULT = Math.tan(e);:} 
+			| CTG LPARENT expr:e RPARENT {: :}
 			;
 			

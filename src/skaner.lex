@@ -41,7 +41,7 @@ return (symbol(sym.EOF));
 	REAL = {INTEGER}[.][0-9]+
 	NUMBER = {INTEGER}|{REAL}
 	
-	WHITESPACE = LINE_SEPARATOR |[ \t\f]
+	WHITESPACE = [ \t\f]
 	LINE_SEPARATOR = \r  | \n | \r\n
 	
  	/* Wyra�enia wy�apuj�ce komentarze */
@@ -57,7 +57,7 @@ return (symbol(sym.EOF));
 		{NUMBER}			{ 
 							return symbol(sym.NUMBER, new Double(yytext())); }
 		
-		{LINE_SEPARATOR}	{ return symbol(sym.NEW_LINE); }
+		{LINE_SEPARATOR}	{return symbol(sym.NEW_LINE); }
 		
 		"("					{ return symbol(sym.LPARENT); }
 		")"					{ return symbol(sym.RPARENT); }
@@ -76,7 +76,7 @@ return (symbol(sym.EOF));
 		
 		
 		{COMMENT}			{ /* Ignorujemy komentarze */ }
-		{WHITESPACE}		{ System.out.println("kutazz");/* Ignorujemy bia�e znaki */ }
+		{WHITESPACE}		{ /* Ignorujemy bia�e znaki */ }
 		
 		[^] { throw new Error("Nieznany symbol: <" + yytext() + "> on " + yyline + ":" + yycolumn); }
 	}
