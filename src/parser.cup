@@ -58,8 +58,8 @@ line	::=	NEW_LINE {: :}
 			| expr:e NEW_LINE {: System.out.println(e); :}
 			;
 
-// TODO: Obs³uga niepoprawnych wartoœci dla tan i ctg
-// TODO: Manewrowanie precyzj¹ liczby.
+// TODO: Obsï¿½uga niepoprawnych wartoï¿½ci dla tan i ctg
+// TODO: Manewrowanie precyzjï¿½ liczby.
 // (double) Math.round(1000 * Math.sin(Math.toRadians(e)))/1000;
 			
 expr	::=	NUMBER:n						{: RESULT = n; :}
@@ -71,7 +71,9 @@ expr	::=	NUMBER:n						{: RESULT = n; :}
 			| LPARENT expr:e RPARENT 		{: RESULT = e; :}
 			| SIN LPARENT expr:e RPARENT	{: RESULT = Math.sin(Math.toRadians(e)); :}
 			| COS LPARENT expr:e RPARENT	{: RESULT = Math.cos(Math.toRadians(e)); :}
-			| TAN LPARENT expr:e RPARENT	{: RESULT = Math.tan(Math.toRadians(e)); :} 
-			| CTG LPARENT expr:e RPARENT	{: RESULT = 1/Math.tan(Math.toRadians(e)); :}
+			| TAN LPARENT expr:e RPARENT	{: if((e-90)%180!=0) RESULT = Math.tan(Math.toRadians(e));
+												else{throw new Error("Tan undefined");} :} 
+			| CTG LPARENT expr:e RPARENT	{: if(e%180!=0)RESULT =  1/Math.tan(Math.toRadians(e));
+												else throw new Error("Ctg undefined") ;:}
 			;
 			
