@@ -60,7 +60,7 @@ terminal Double	NUMBER;
 terminal String	ID;
 
 // Definicja symboli nieterminalnych
-non terminal Double	expr, negnum;
+non terminal Double	expr;
 non terminal		line, input;
 
 // Priorytety dzia�a� - od najmniejszego do najwi�kszego

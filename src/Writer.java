@@ -26,6 +26,10 @@ public class Writer {
 		output.print(sb.toString());
 	}
 	
+	public String getBuffor(){
+		return sb.toString();
+	}
+	
 	public void setStream(OutputStream stream)
 	{
 		output = new PrintStream(stream);
