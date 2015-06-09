@@ -16,9 +16,10 @@ public class Writer {
 		setStream(stream);
 	}
 	
-	public void write(String line)
+	public void write(String msg)
 	{
-		sb.append(line);
+		sb.append(msg);
+		output.print(msg);
 	}
 	
 	public void writeBuffor(){

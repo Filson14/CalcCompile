@@ -47,71 +47,10 @@ parser code {:
 		if(variables.get(key)==null) throw new Error("Undefined variable " + key);
 		return variables.get(key);
 	}
-	
-	public void writeToken(java_cup.runtime.Symbol token){
-		switch(token.sym){
-			case 1: {
-				
-			}
-			case 2: {
-				//writer.write();
-			}
-			case 3: {
-				writer.write("+");
-			}
-			case 4: {
-				writer.write("-");
-			}
-			case 5: {
-				//writer.write();
-			}
-			case 6: {
-				//writer.write();
-			}
-			case 7: {
-				//writer.write();
-			}
-			case 8: {
-			
-			}
-			case 9: {
-			
-			}
-			case 10: {
-			
-			}
-			case 11: {
-			
-			}
-			case 12: {
-			
-			}
-			case 13: {
-			
-			}
-			case 14: {
-			
-			}
-			case 15: {
-			
-			}
-			case 16: {
-				writer.write(""+token.value);
-			}
-			case 17: {
-			
-			}
-			
-		}
-	}
 :}
 
 init with	{://scanner.init(); :};
-scan with	{: 
-				java_cup.runtime.Symbol tok = scanner.next_token(); 
-				writeToken(tok);
-				return tok;
-			:};
+scan with	{: return scanner.next_token(); :};
  
 // Definicja symboli terminalnych
 terminal		NEW_LINE, PLUS, MINUS, TIMES, DIVIDE, POW, EQ;
@@ -140,7 +79,7 @@ input	::=	input line
 
 line	::=	NEW_LINE {: :}
 			| ID:var EQ expr:e NEW_LINE		{: parser.addVariable(var, e); parser.getWriter().write(var + " = " + (double) Math.round(1000 * e)/1000  + "\n"); :}	
-			| expr:e NEW_LINE				{: parser.getWriter().write("=" + (double) Math.round(1000 * e)/1000  + "\n"); /*System.out.println((double) Math.round(1000 * e)/1000); */:}
+			| expr:e NEW_LINE				{: parser.getWriter().write("=" + (double) Math.round(1000 * e)/1000  + "\n"); :}
 			;
 
 // TODO: Obs�uga niepoprawnych warto�ci dla tan i ctg

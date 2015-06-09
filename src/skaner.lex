@@ -90,7 +90,3 @@ return (symbol(sym.EOF));
 		
 		[^] { throw new Error("Nieznany symbol: <" + yytext() + "> on " + yyline + ":" + yycolumn); }
 	}
-	
-	
-	
-	

@@ -11,11 +11,12 @@ public class Main {
 		
 		try{
 			
-			Writer writer = new Writer(new FileOutputStream(new File("test/wynik.txt")));
-			//Writer writer = new Writer(System.out);
-			//Parser p = new Parser(new Scanner(System.in),writer);
-			Parser p = new Parser(new Scanner(new FileInputStream(new File("test/test.txt"))), writer );
+			//Writer writer = new Writer(new FileOutputStream(new File("test/wynik.txt")));
+			Writer writer = new Writer(System.out);
+			Parser p = new Parser(new Scanner(System.in),writer);
+			//Parser p = new Parser(new Scanner(new FileInputStream(new File("test/test.txt"))), writer );
 			Object result = p.parse();
+			p.getWriter().writeBuffor();
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
