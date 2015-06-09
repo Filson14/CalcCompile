@@ -62,7 +62,7 @@ public class MainWindow extends JFrame{
 	}
 	public void write(String line)
 	{
-		outputArea.append(line);
+		getOutputArea().append(line);
 	}
 	public String getConsoleText()
 	{
@@ -95,7 +95,7 @@ public class MainWindow extends JFrame{
 		mainPanel.setLayout(new BorderLayout(0, 0));
 		
 		inputArea = new JTextArea();
-		outputArea = new JTextArea();
+		setOutputArea(new JTextArea());
 		setCompile(new JButton("Compile"));
 		leftPanel  = new JPanel();
 		rightPanel = new JPanel();
@@ -127,8 +127,8 @@ public class MainWindow extends JFrame{
 		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 		leftPanel.add(inputArea);
 		leftPanel.add(new JSeparator(SwingConstants.HORIZONTAL));
-		leftPanel.add(outputArea);
-		outputArea.setEditable(false);
+		leftPanel.add(getOutputArea());
+		getOutputArea().setEditable(false);
 		inputArea.setSize((int) (this.WIDTH/(2.2)), (int) (this.HEIGHT/(2.2)));
 		
 		splitPane.setRightComponent(rightPanel);
@@ -161,12 +161,12 @@ public class MainWindow extends JFrame{
 				    if(returnVal == JFileChooser.APPROVE_OPTION) {
 				    	
 
-						outputArea.append("Chosen file : " + chooser.getSelectedFile().getAbsolutePath()+ "\n");
+						getOutputArea().append("Chosen file : " + chooser.getSelectedFile().getAbsolutePath()+ "\n");
 						getInputFileName().setText(chooser.getSelectedFile().getAbsolutePath());
 				    }
 				    else
 				    {
-				    	outputArea.append("Cancelled\n");
+				    	getOutputArea().append("Cancelled\n");
 				    }
 //				String fn = fileDialog.getFile();
 //				if(fn == null)
@@ -219,5 +219,13 @@ public class MainWindow extends JFrame{
 
 	public void setInputFileName(JTextField inputFileName) {
 		this.inputFileName = inputFileName;
+	}
+
+	public JTextArea getOutputArea() {
+		return outputArea;
+	}
+
+	public void setOutputArea(JTextArea outputArea) {
+		this.outputArea = outputArea;
 	}
 }

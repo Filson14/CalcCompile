@@ -39,6 +39,7 @@ class Controller {
 	Parser parser;
 
 	public Controller() {
+		parser = new Parser();
 		mainWindow = new MainWindow();
 		mainWindow.setVisible(true);
 		mainWindow.getCompile().addActionListener(new CompileListener());
@@ -48,17 +49,16 @@ class Controller {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (parser != null)
-				parser = null;
 			if (writer != null)
 				writer = null;
+			mainWindow.getOutputArea().setText("");
 			Scanner scanner;
 			String outputName = "";
 			try {
 				if (mainWindow.getInputConsole().isSelected()) {
 					System.out.println(mainWindow.getConsoleText());
-					scanner = new Scanner( new ByteArrayInputStream(mainWindow
-							.getConsoleText().getBytes("UTF-8")));
+					String text = mainWindow.getConsoleText()+ "\n";
+					scanner = new Scanner( new ByteArrayInputStream(text.getBytes("UTF-8")));
 					// outputName = "consoleOutput" + Math.random() * 1000 +
 					// ".txt";
 				} else {
@@ -95,9 +95,12 @@ class Controller {
 						mainWindow.write("Cancelled\n");
 					}
 				}
+//				parser.setScanner(scanner);
+//				parser.setWriter(writer); 
 				parser = new Parser(scanner, writer);
 				parser.parse();
-				writer.writeBuffor();
+				if(mainWindow.getOutputConsole().isSelected())mainWindow.getOutputArea().append(writer.getBuffor());
+					writer.writeBuffor();
 			} catch (FileNotFoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();

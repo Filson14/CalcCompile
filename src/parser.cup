@@ -9,6 +9,16 @@ parser code {:
 	HashMap<String, Double> variables = new HashMap<String, Double>();
 	
 	
+	public void setScanner(Scanner scanner)
+	{
+		this.scanner = scanner;
+	}
+	
+	public void setWriter(Writer  writer)
+	{
+		this.writer = writer;
+	}
+	
 	public Parser(Scanner scanner,Writer writer){
 		super(scanner);
 		this.scanner = scanner;
