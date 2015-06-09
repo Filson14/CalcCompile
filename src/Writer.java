@@ -19,14 +19,16 @@ public class Writer {
 	public void write(String msg)
 	{
 		sb.append(msg);
-		output.print(msg);
+//		output.print(msg);
 	}
 	
 	public void writeBuffor(){
 		output.print(sb.toString());
+		output.close();
 	}
 	
 	public String getBuffor(){
+		
 		return sb.toString();
 	}
 	

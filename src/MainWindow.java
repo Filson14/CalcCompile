@@ -2,6 +2,7 @@ import java.awt.EventQueue;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -24,6 +25,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 import javax.swing.BoxLayout;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 import com.sun.org.apache.bcel.internal.generic.FMUL;
 
 
@@ -40,11 +43,11 @@ public class MainWindow extends JFrame{
 	private JTextField inputFileName;
 	private JRadioButton outputFile;
 	private JRadioButton outputConsole;
-	private FileDialog fileDialog;
+	private JFileChooser fileDialog;
 	private JRadioButton inputConsole;
 	private JRadioButton inputFile;
 	
-	public FileDialog getFileDialog()
+	public JFileChooser getFileDialog()
 	{
 		return fileDialog;
 	}
@@ -67,7 +70,7 @@ public class MainWindow extends JFrame{
 	}
 	public String getFileName()
 	{
-		return inputFileName.getText();
+		return getInputFileName().getText();
 	}
 	
 	
@@ -93,25 +96,24 @@ public class MainWindow extends JFrame{
 		
 		inputArea = new JTextArea();
 		outputArea = new JTextArea();
-		compile = new JButton("Compile");
+		setCompile(new JButton("Compile"));
 		leftPanel  = new JPanel();
 		rightPanel = new JPanel();
 		inputBrowse = new JButton("Browse");
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		JPanel temp1 = new JPanel();
-		inputFileName = new JTextField();
+		setInputFileName(new JTextField());
 		outputFile = new  JRadioButton("Output to file");
 		outputConsole = new JRadioButton("Output to console");
 		
-		fileDialog = new FileDialog(this);
-		fileDialog.setVisible(false);
+		inputConsole = new JRadioButton("Input from console");
+		inputFile = new JRadioButton("Input from file");
+		inputConsole.setSelected(true);
+		ButtonGroup btnGroup2 = new ButtonGroup();
+		btnGroup2.add(inputConsole);
+		btnGroup2.add(inputFile);
 		
-		fileDialog.setFilenameFilter(new FilenameFilter() {
-		    @Override
-		    public boolean accept(File dir, String name) {
-		        return name.endsWith(".txt");
-		    }
-		});
+		
 		
         GridBagConstraints gbc = new GridBagConstraints();
 		
@@ -120,7 +122,7 @@ public class MainWindow extends JFrame{
 		mainPanel.add(splitPane);
 		rightPanel.setLayout(new GridBagLayout());
 		
-		inputFileName.setText("...");
+		getInputFileName().setText("...");
 		temp1.setLayout(new BoxLayout(temp1, BoxLayout.Y_AXIS));
 		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 		leftPanel.add(inputArea);
@@ -134,14 +136,16 @@ public class MainWindow extends JFrame{
 		splitPane.setEnabled(false);
 		
 		rightPanel.add(temp1);
-		temp1.add(inputFileName);
+		temp1.add(inputConsole);
+		temp1.add(inputFile);
+		temp1.add(getInputFileName());
 		temp1.add(inputBrowse);
 		ButtonGroup btnGroup = new ButtonGroup();
 		btnGroup.add(outputConsole);
 		btnGroup.add(outputFile);
 		temp1.add(outputConsole);
 		temp1.add(outputFile);
-		temp1.add(compile);
+		temp1.add(getCompile());
 		outputConsole.setSelected(true);
 		
 		
@@ -149,18 +153,32 @@ public class MainWindow extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				fileDialog.setVisible(true);
-				String fn = fileDialog.getFile();
-				if(fn == null)
-				{
-					outputArea.append("Cancelled");
-					
-				}
-				else
-				{
-					outputArea.append("Chosen file : " + fn);
-					inputFileName.setText(fn);
-				}
+//				
+				 JFileChooser chooser = new JFileChooser();
+//				    FileNameExtensionFilter filter = new FileNameExtensionFilter("txt");
+//				    chooser.setFileFilter(filter);
+				    int returnVal = chooser.showOpenDialog(null);
+				    if(returnVal == JFileChooser.APPROVE_OPTION) {
+				    	
+
+						outputArea.append("Chosen file : " + chooser.getSelectedFile().getAbsolutePath()+ "\n");
+						getInputFileName().setText(chooser.getSelectedFile().getAbsolutePath());
+				    }
+				    else
+				    {
+				    	outputArea.append("Cancelled\n");
+				    }
+//				String fn = fileDialog.getFile();
+//				if(fn == null)
+//				{
+//					outputArea.append("Cancelled");
+//					
+//				}
+//				else
+//				{
+//					outputArea.append("Chosen file : " + fn);
+//					inputFileName.setText(fn);
+//				}
 				
 				
 				
@@ -185,5 +203,21 @@ public class MainWindow extends JFrame{
 
 	public void setInputFile(JRadioButton inputFile) {
 		this.inputFile = inputFile;
+	}
+
+	public JButton getCompile() {
+		return compile;
+	}
+
+	public void setCompile(JButton compile) {
+		this.compile = compile;
+	}
+
+	public JTextField getInputFileName() {
+		return inputFileName;
+	}
+
+	public void setInputFileName(JTextField inputFileName) {
+		this.inputFileName = inputFileName;
 	}
 }

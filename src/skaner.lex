@@ -19,7 +19,7 @@ return (symbol(sym.EOF));
 	Ten kod zostanie wstawiony do wygenerowanej klasy skanera.
 */
 
-	private static final boolean printToken = false;
+	private static final boolean printToken = true;
 	/**
 	*	Metoda tworzy nowy Symbol (token) wraz z okre�leniem jego pozycji, bez warto�ci.
 	**/
