@@ -1,11 +1,17 @@
 import java_cup.runtime.*;
+import java.util.HashMap;
 
 // Kod ustawiaj�cy parser i skaner, kt�rego u�ywa.
 parser code {:
 	Scanner scanner;
-	public Parser(Scanner scanner){
+	Writer writer;
+	HashMap<String, Double> variables = new HashMap<String, Double>();
+	
+	
+	public Parser(Scanner scanner,Writer writer){
 		super(scanner);
 		this.scanner = scanner;
+		this.writer = writer;
 	}
 	
 	public void report_error(String message, Object info){
@@ -22,28 +28,105 @@ parser code {:
 		System.err.println(msg);
 	}
 	
+	public Writer getWriter()
+	{
+		return this.writer;
+	}
+	
 	public void report_fatal_error(String message, Object info){
 		report_error(message, info);
 		System.exit(1);
 	}
+	
+	public void addVariable(String key, Double value){
+		variables.put(key, value);
+	}
+	
+	public Double getVariable(String key) throws Error{
+		if(variables.get(key)==null) throw new Error("Undefined variable " + key);
+		return variables.get(key);
+	}
+	
+	public void writeToken(java_cup.runtime.Symbol token){
+		switch(token.sym){
+			case 1: {
+				
+			}
+			case 2: {
+				//writer.write();
+			}
+			case 3: {
+				writer.write("+");
+			}
+			case 4: {
+				writer.write("-");
+			}
+			case 5: {
+				//writer.write();
+			}
+			case 6: {
+				//writer.write();
+			}
+			case 7: {
+				//writer.write();
+			}
+			case 8: {
+			
+			}
+			case 9: {
+			
+			}
+			case 10: {
+			
+			}
+			case 11: {
+			
+			}
+			case 12: {
+			
+			}
+			case 13: {
+			
+			}
+			case 14: {
+			
+			}
+			case 15: {
+			
+			}
+			case 16: {
+				writer.write(""+token.value);
+			}
+			case 17: {
+			
+			}
+			
+		}
+	}
 :}
 
 init with	{://scanner.init(); :};
-scan with	{:return scanner.next_token(); :};
-
+scan with	{: 
+				java_cup.runtime.Symbol tok = scanner.next_token(); 
+				writeToken(tok);
+				return tok;
+			:};
+ 
 // Definicja symboli terminalnych
-terminal		NEW_LINE, PLUS, MINUS, TIMES, DIVIDE, POW;
-terminal		LPARENT, RPARENT;
+terminal		NEW_LINE, PLUS, MINUS, TIMES, DIVIDE, POW, EQ;
+terminal		LPARENT, RPARENT, UMINUS;
 terminal		SIN, COS, TAN, CTG;
 terminal Double	NUMBER;
+terminal String	ID;
 
-// Definicja symboli terminalnych
-non terminal Double	expr;
+// Definicja symboli nieterminalnych
+non terminal Double	expr, negnum;
 non terminal		line, input;
 
 // Priorytety dzia�a� - od najmniejszego do najwi�kszego
 precedence left	PLUS, MINUS;
 precedence left	TIMES, DIVIDE;
+precedence left UMINUS;
 precedence left	POW;
 precedence left	SIN, COS, TAN, CTG;
 //precedence	LPARENT, RPARENT;
@@ -55,25 +138,29 @@ input	::=	input line
 			;
 
 line	::=	NEW_LINE {: :}
-			| expr:e NEW_LINE {: System.out.println(e); :}
+			| ID:var EQ expr:e NEW_LINE		{: parser.addVariable(var, e); parser.getWriter().write(var + " = " + (double) Math.round(1000 * e)/1000  + "\n"); :}	
+			| expr:e NEW_LINE				{: parser.getWriter().write("=" + (double) Math.round(1000 * e)/1000  + "\n"); /*System.out.println((double) Math.round(1000 * e)/1000); */:}
 			;
 
 // TODO: Obs�uga niepoprawnych warto�ci dla tan i ctg
 // TODO: Manewrowanie precyzj� liczby.
-// (double) Math.round(1000 * Math.sin(Math.toRadians(e)))/1000;
 			
 expr	::=	NUMBER:n						{: RESULT = n; :}
+			| ID:var						{: RESULT = parser.getVariable(var); :}	
 			| expr:e1 PLUS expr:e2			{: RESULT = e1+e2; :}
 			| expr:e1 MINUS expr:e2			{: RESULT = e1-e2; :}
-			| expr:e1 TIMES expr:e2			{: RESULT=e1*e2; :}
-			| expr:e1 DIVIDE expr:e2		{: RESULT=e1/e2; :}
-			| expr:e1 POW expr:e2			{: RESULT= Math.pow(e1,e2); :}
+			| expr:e1 TIMES expr:e2			{: RESULT = e1*e2; :}
+			| expr:e1 DIVIDE expr:e2		{: RESULT = e1/e2; :}
+			| expr:e1 POW expr:e2			{: RESULT = Math.pow(e1,e2); :}
 			| LPARENT expr:e RPARENT 		{: RESULT = e; :}
+			| MINUS NUMBER:n				{: RESULT = -n; :}
+			| MINUS LPARENT expr:e RPARENT	{: RESULT = -e; :}
+				%prec UMINUS
 			| SIN LPARENT expr:e RPARENT	{: RESULT = Math.sin(Math.toRadians(e)); :}
 			| COS LPARENT expr:e RPARENT	{: RESULT = Math.cos(Math.toRadians(e)); :}
 			| TAN LPARENT expr:e RPARENT	{: if((e-90)%180!=0) RESULT = Math.tan(Math.toRadians(e));
 												else{throw new Error("Tan undefined");} :} 
 			| CTG LPARENT expr:e RPARENT	{: if(e%180!=0)RESULT =  1/Math.tan(Math.toRadians(e));
-												else throw new Error("Ctg undefined") ;:}
-			;
+												else throw new Error("Ctg undefined"); :}									
+			;		
 			

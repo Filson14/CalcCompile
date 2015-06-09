@@ -17,11 +17,13 @@ return (symbol(sym.EOF));
 /*
 	Ten kod zostanie wstawiony do wygenerowanej klasy skanera.
 */
+
+	private static final boolean printToken = false;
 	/**
 	*	Metoda tworzy nowy Symbol (token) wraz z okre�leniem jego pozycji, bez warto�ci.
 	**/
 	private Symbol symbol(int type){
-		System.out.println("TOKEN: " + type);
+		if(printToken) System.out.println("TOKEN: " + type);
 		return new Symbol(type, yyline, yycolumn);
 	}
 
@@ -29,7 +31,8 @@ return (symbol(sym.EOF));
 	*	Metoda tworzy nowy Symbol (token) wraz z okre�leniem jego pozycji i warto�ci.
 	**/
 	private Symbol symbol(int type, Object value){
-		System.out.println("TOKEN: " + type);
+		if(printToken) System.out.println("TOKEN: " + type);
+		//System.out.println("  " + value);
 		return new Symbol(type, yyline, yycolumn, value);
 	}
 	
@@ -38,24 +41,28 @@ return (symbol(sym.EOF));
 %}
 
 
-	INTEGER = 0|[1-9]*[0-9]
-	REAL = {INTEGER}[.][0-9]+
-	NUMBER = {INTEGER}|{REAL}
+	INTEGER			= 0|[1-9]*[0-9]
+	REAL			= {INTEGER}[.][0-9]+
+	NUMBER			= {INTEGER}|{REAL}
 	
-	WHITESPACE = [ \t\f]
-	LINE_SEPARATOR = \r  | \n | \r\n
+	WHITESPACE		= [ \t\f]
+	LINE_SEPARATOR	= \r  | \n | \r\n
 	
  	/* Wyra�enia wy�apuj�ce komentarze */
-    COMMENT = {BLOCK_COMMENT} | {LINE_COMMENT} | {JAVADOC_COMMENT}
+    COMMENT 		= {BLOCK_COMMENT} | {LINE_COMMENT} | {JAVADOC_COMMENT}
+    
+    IDENTIFIER		= [a-zA-Z]+[a-zA-Z0-9]*
 
-    BLOCK_COMMENT   = "/*" [^*] ~"*/" | "/*" "*"+ "/"
-    LINE_COMMENT     = "//" [^\r\n]* {LINE_SEPARATOR}?
-    JAVADOC_COMMENT = "/**" {INSIDE_COMMENT} "*"+ "/"
-    INSIDE_COMMENT       = ( [^*] | \*+ [^/*] )*
+    BLOCK_COMMENT	= "/*" [^*] ~"*/" | "/*" "*"+ "/"
+    LINE_COMMENT	= "//" [^\r\n]* {LINE_SEPARATOR}?
+    JAVADOC_COMMENT	= "/**" {INSIDE_COMMENT} "*"+ "/"
+    INSIDE_COMMENT	= ( [^*] | \*+ [^/*] )*
 	
 %%
 	<YYINITIAL>{
 		{NUMBER}			{ return symbol(sym.NUMBER, new Double(yytext())); }
+		
+		
 		
 		{LINE_SEPARATOR}	{ return symbol(sym.NEW_LINE); }
 		
@@ -73,7 +80,9 @@ return (symbol(sym.EOF));
 		"tan"				{ return symbol(sym.TAN); }
 		"ctg"				{ return symbol(sym.CTG); }
 		
+		"="					{ return symbol(sym.EQ); }
 		
+		{IDENTIFIER}		{ return symbol(sym.ID, new String(yytext())); }
 		
 		{COMMENT}			{ /* Ignorujemy komentarze */ }
 		{WHITESPACE}		{ /* Ignorujemy bia�e znaki */ }
