@@ -33,17 +33,18 @@ scan with	{:return scanner.next_token(); :};
 
 // Definicja symboli terminalnych
 terminal		NEW_LINE, PLUS, MINUS, TIMES, DIVIDE, POW;
-terminal		LPARENT, RPARENT;
+terminal		LPARENT, RPARENT, UMINUS, ID;
 terminal		SIN, COS, TAN, CTG;
 terminal Double	NUMBER;
 
-// Definicja symboli terminalnych
-non terminal Double	expr;
+// Definicja symboli nieterminalnych
+non terminal Double	expr, negnum;
 non terminal		line, input;
 
 // Priorytety dzia�a� - od najmniejszego do najwi�kszego
 precedence left	PLUS, MINUS;
 precedence left	TIMES, DIVIDE;
+precedence left UMINUS;
 precedence left	POW;
 precedence left	SIN, COS, TAN, CTG;
 //precedence	LPARENT, RPARENT;
@@ -55,7 +56,7 @@ input	::=	input line
 			;
 
 line	::=	NEW_LINE {: :}
-			| expr:e NEW_LINE {: System.out.println(e); :}
+			| expr:e NEW_LINE				{: System.out.println(e); :}
 			;
 
 // TODO: Obs�uga niepoprawnych warto�ci dla tan i ctg
@@ -69,11 +70,13 @@ expr	::=	NUMBER:n						{: RESULT = n; :}
 			| expr:e1 DIVIDE expr:e2		{: RESULT=e1/e2; :}
 			| expr:e1 POW expr:e2			{: RESULT= Math.pow(e1,e2); :}
 			| LPARENT expr:e RPARENT 		{: RESULT = e; :}
+			| MINUS NUMBER:n				{: RESULT = -n; :}
+			| MINUS LPARENT expr:e RPARENT	{: RESULT = -e; :}
+				%prec UMINUS
 			| SIN LPARENT expr:e RPARENT	{: RESULT = Math.sin(Math.toRadians(e)); :}
 			| COS LPARENT expr:e RPARENT	{: RESULT = Math.cos(Math.toRadians(e)); :}
 			| TAN LPARENT expr:e RPARENT	{: if((e-90)%180!=0) RESULT = Math.tan(Math.toRadians(e));
 												else{throw new Error("Tan undefined");} :} 
 			| CTG LPARENT expr:e RPARENT	{: if(e%180!=0)RESULT =  1/Math.tan(Math.toRadians(e));
-												else throw new Error("Ctg undefined") ;:}
+												else throw new Error("Ctg undefined") ;:}				
 			;
-			
