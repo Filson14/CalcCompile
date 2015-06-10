@@ -37,6 +37,7 @@ parser code {:
 
 		msg.append(" : " + message);
 		System.err.println(msg);
+		writer.write(msg.toString()+"\n");
 	}
 	
 	public Writer getWriter()
@@ -46,15 +47,16 @@ parser code {:
 	
 	public void report_fatal_error(String message, Object info){
 		report_error(message, info);
-		System.exit(1);
+		//writer.write(message + " " + info + "\n");
+		//System.exit(1);
 	}
 	
 	public void addVariable(String key, Double value){
 		variables.put(key, value);
 	}
 	
-	public Double getVariable(String key) throws Error{
-		if(variables.get(key)==null) throw new Error("Undefined variable " + key);
+	public Double getVariable(String key) throws Exception{
+		if(variables.get(key)==null) throw new Exception("Undefined variable " + key);
 		return variables.get(key);
 	}
 :}
@@ -100,7 +102,9 @@ expr	::=	NUMBER:n						{: RESULT = n; :}
 			| expr:e1 PLUS expr:e2			{: RESULT = e1+e2; :}
 			| expr:e1 MINUS expr:e2			{: RESULT = e1-e2; :}
 			| expr:e1 TIMES expr:e2			{: RESULT = e1*e2; :}
-			| expr:e1 DIVIDE expr:e2		{: RESULT = e1/e2; :}
+			| expr:e1 DIVIDE expr:e2		{: if(e2!=0)RESULT = e1/e2; 
+												else {throw new Exception("Divide by zero");}:}
+					
 			| expr:e1 POW expr:e2			{: RESULT = Math.pow(e1,e2); :}
 			| LPARENT expr:e RPARENT 		{: RESULT = e; :}
 			| MINUS NUMBER:n				{: RESULT = -n; :}
@@ -109,8 +113,8 @@ expr	::=	NUMBER:n						{: RESULT = n; :}
 			| SIN LPARENT expr:e RPARENT	{: RESULT = Math.sin(Math.toRadians(e)); :}
 			| COS LPARENT expr:e RPARENT	{: RESULT = Math.cos(Math.toRadians(e)); :}
 			| TAN LPARENT expr:e RPARENT	{: if((e-90)%180!=0) RESULT = Math.tan(Math.toRadians(e));
-												else{throw new Error("Tan undefined");} :} 
+												else{throw new Exception("Tan undefined");} :} 
 			| CTG LPARENT expr:e RPARENT	{: if(e%180!=0)RESULT =  1/Math.tan(Math.toRadians(e));
-												else throw new Error("Ctg undefined"); :}									
+												else throw new Exception("Ctg undefined"); :}									
 			;		
 			

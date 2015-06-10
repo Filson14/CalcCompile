@@ -103,12 +103,16 @@ class Controller {
 					writer.writeBuffor();
 			} catch (FileNotFoundException e1) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+				mainWindow.getOutputArea().append(e1.getMessage());
+				//				e1.printStackTrace();
 			} catch (IOException e1) {
 
+				mainWindow.getOutputArea().append(e1.getMessage());
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
-				e1.printStackTrace();
+//				e1.printStackTrace();
+
+				mainWindow.getOutputArea().append(e1.getMessage());
 			}
 		}
 
